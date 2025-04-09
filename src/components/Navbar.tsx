@@ -4,27 +4,27 @@ import { Flag, Users, Calendar, Radio, Cloud } from 'lucide-react';
 
 function Navbar() {
   return (
-    <nav className="bg-neo-purple shadow-neo shadow-neo-pink border-4 border-white">
+    <nav className="bg-neo-gray border-b-4 border-neo-purple">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center space-x-2 hover:translate-y-[-2px] transition-transform">
-            <Flag className="w-8 h-8" />
-            <span className="text-xl font-bold text-neo-black">F1 Dashboard</span>
+        <div className="flex items-center justify-between h-20">
+          <Link to="/" className="flex items-center space-x-3 hover:translate-y-[-2px] transition-transform">
+            <Flag className="w-10 h-10 text-neo-purple" />
+            <span className="text-2xl font-black text-neo-white tracking-superwide uppercase font-display">F1 Dash</span>
           </Link>
-          <div className="flex space-x-6">
+          <div className="flex space-x-4">
             {[
-              { to: '/drivers', Icon: Users, label: 'Drivers' },
-              { to: '/sessions', Icon: Calendar, label: 'Sessions' },
-              { to: '/team-radio', Icon: Radio, label: 'Team Radio' },
-              { to: '/weather', Icon: Cloud, label: 'Weather' },
-            ].map(({ to, Icon, label }) => (
+              { to: '/drivers', Icon: Users, label: 'Drivers', color: 'neo-pink' },
+              { to: '/sessions', Icon: Calendar, label: 'Sessions', color: 'neo-green' },
+              { to: '/team-radio', Icon: Radio, label: 'Radio', color: 'neo-yellow' },
+              { to: '/weather', Icon: Cloud, label: 'Weather', color: 'neo-blue' },
+            ].map(({ to, Icon, label, color }) => (
               <Link
                 key={to}
                 to={to}
-                className="flex items-center space-x-1 text-neo-black hover:translate-y-[-2px] transition-transform bg-white px-4 py-2 rounded border-2 border-neo-black shadow-neo shadow-neo-black"
+                className={`flex items-center space-x-2 text-neo-black hover:translate-y-[-2px] transition-transform bg-${color} px-5 py-2 rounded-lg border-4 border-neo-black shadow-neo shadow-neo-black font-black uppercase tracking-wider font-display`}
               >
                 <Icon className="w-5 h-5" />
-                <span className="font-bold">{label}</span>
+                <span>{label}</span>
               </Link>
             ))}
           </div>

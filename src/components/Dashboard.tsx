@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from 'react-query';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 function Dashboard() {
   const { data: carData } = useQuery('carData', async () => {
@@ -9,31 +9,54 @@ function Dashboard() {
   });
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Live Race Dashboard</h1>
+    <div className="space-y-8">
+      <h1 className="text-5xl font-black text-neo-purple tracking-superwide uppercase font-display mb-2">Live Race Dashboard</h1>
+      <p className="text-neo-white/70 text-lg font-mono tracking-tight">Real-time telemetry and race control updates</p>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-gray-800 p-6 rounded-lg">
-          <h2 className="text-xl font-semibold mb-4">Car Telemetry</h2>
-          {carData && (
-            <LineChart width={500} height={300} data={carData.slice(0, 10)}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="speed" stroke="#8884d8" />
-              <Line type="monotone" dataKey="rpm" stroke="#82ca9d" />
-            </LineChart>
-          )}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="bg-neo-gray border-4 border-neo-purple p-6 rounded-xl shadow-neo-lg shadow-neo-purple">
+          <h2 className="text-3xl font-black text-neo-white tracking-tighter uppercase font-display mb-2">Car Telemetry</h2>
+          <p className="text-neo-purple/80 text-sm font-mono mb-6">Live performance metrics</p>
+          <div className="h-[300px] w-full">
+            {carData && (
+              <ResponsiveContainer>
+                <LineChart data={carData.slice(0, 10)}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                  <XAxis dataKey="date" stroke="#C4B5FD" className="font-mono text-xs" />
+                  <YAxis stroke="#C4B5FD" className="font-mono text-xs" />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: '#1F1F1F',
+                      border: '2px solid #C4B5FD',
+                      borderRadius: '8px',
+                      fontFamily: 'JetBrains Mono'
+                    }}
+                  />
+                  <Legend wrapperStyle={{ fontFamily: 'JetBrains Mono' }} />
+                  <Line type="monotone" dataKey="speed" stroke="#FDA4AF" strokeWidth={3} />
+                  <Line type="monotone" dataKey="rpm" stroke="#86EFAC" strokeWidth={3} />
+                </LineChart>
+              </ResponsiveContainer>
+            )}
+          </div>
         </div>
 
-        <div className="bg-gray-800 p-6 rounded-lg">
-          <h2 className="text-xl font-semibold mb-4">Race Control Messages</h2>
-          <div className="space-y-2">
-            {/* Race control messages will go here */}
-            <p className="text-yellow-400">Yellow flag in sector 2</p>
-            <p className="text-blue-400">Blue flag: Car 44 approaching</p>
+        <div className="bg-neo-gray border-4 border-neo-pink p-6 rounded-xl shadow-neo-lg shadow-neo-pink">
+          <h2 className="text-3xl font-black text-neo-white tracking-tighter uppercase font-display mb-2">Race Control</h2>
+          <p className="text-neo-pink/80 text-sm font-mono mb-6">Track status and flags</p>
+          <div className="space-y-4">
+            <div className="bg-neo-black p-4 rounded-lg border-2 border-neo-yellow">
+              <p className="text-neo-yellow font-black uppercase tracking-wider">⚠️ Yellow Flag: Sector 2</p>
+              <p className="text-neo-white/70 font-mono text-sm mt-1">Debris on track at Turn 7</p>
+            </div>
+            <div className="bg-neo-black p-4 rounded-lg border-2 border-neo-blue">
+              <p className="text-neo-blue font-black uppercase tracking-wider">🔵 Blue Flag: Car 44</p>
+              <p className="text-neo-white/70 font-mono text-sm mt-1">Faster car approaching</p>
+            </div>
+            <div className="bg-neo-black p-4 rounded-lg border-2 border-neo-green">
+              <p className="text-neo-green font-black uppercase tracking-wider">✅ Track Clear</p>
+              <p className="text-neo-white/70 font-mono text-sm mt-1">Racing conditions in all sectors</p>
+            </div>
           </div>
         </div>
       </div>
