@@ -1,18 +1,21 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery } from 'react-query';
 
 interface Session {
-  session_key: number;
   session_name: string;
   session_type: string;
-  status: string;
   circuit_short_name: string;
+  country_name: string;
+  date_end: string;
   date_start: string;
+  gmt_offset: string;
+  location: string;
+  year: number;
 }
 
 function Sessions() {
   const { data, isLoading, isError } = useQuery('sessions', async () => {
-    const response = await fetch('http://localhost:8000/sessions');
+    const response = await fetch('https://api.openf1.org/v1/sessions');
     if (!response.ok) {
       throw new Error('Failed to fetch sessions');
     }
@@ -21,12 +24,30 @@ function Sessions() {
 
   const sessions: Session[] = Array.isArray(data) ? data : [];
 
+  const [selectedCountry, setSelectedCountry] = useState('');
+  const [selectedType, setSelectedType] = useState('');
+  const [selectedYear, setSelectedYear] = useState('');
+
+  const filteredSessions = useMemo(() => {
+    return [...sessions]
+      .filter((session) => {
+        return (
+          (!selectedCountry || session.country_name === selectedCountry) &&
+          (!selectedType || session.session_type === selectedType) &&
+          (!selectedYear || session.year.toString() === selectedYear)
+        );
+      })
+      .sort((a, b) => new Date(b.date_start).getTime() - new Date(a.date_start).getTime())
+      .slice(0, 20);
+  }, [sessions, selectedCountry, selectedType, selectedYear]);
+
+  const countryOptions = [...new Set(sessions.map((s) => s.country_name))].sort();
+  const typeOptions = [...new Set(sessions.map((s) => s.session_type))].sort();
+  const yearOptions = [...new Set(sessions.map((s) => s.year.toString()))].sort((a, b) => +b - +a);
+
   if (isLoading) {
     return (
-      <div
-        className="text-center text-neo-purple text-xl font-bold"
-        aria-busy="true"
-      >
+      <div className="text-center text-neo-green text-xl font-bold" aria-busy="true">
         Loading sessions...
       </div>
     );
@@ -40,40 +61,86 @@ function Sessions() {
     );
   }
 
-  const sortedSessions = sessions.sort((a, b) =>
-    new Date(b.date_start).getTime() - new Date(a.date_start).getTime()
-  );
-
   return (
-    <div className="space-y-8">
-      <h1 className="text-4xl font-bold text-neo-green border-b-4 border-neo-green pb-2">
+    <div className="bg-neutral-900 min-h-screen text-white p-8 space-y-10">
+      <h1 className="text-4xl font-extrabold text-neo-green border-b-4 border-neo-green pb-2">
         Race Sessions
       </h1>
+
+      {/* Filters */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <select
+          value={selectedCountry}
+          onChange={(e) => setSelectedCountry(e.target.value)}
+          className="bg-neutral-800 text-neo-green border-2 border-neo-green p-2 rounded font-bold"
+        >
+          <option value="">All Countries</option>
+          {countryOptions.map((country) => (
+            <option key={country} value={country}>
+              {country}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={selectedType}
+          onChange={(e) => setSelectedType(e.target.value)}
+          className="bg-neutral-800 text-neo-green border-2 border-neo-green p-2 rounded font-bold"
+        >
+          <option value="">All Session Types</option>
+          {typeOptions.map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={selectedYear}
+          onChange={(e) => setSelectedYear(e.target.value)}
+          className="bg-neutral-800 text-neo-green border-2 border-neo-green p-2 rounded font-bold"
+        >
+          <option value="">All Years</option>
+          {yearOptions.map((year) => (
+            <option key={year} value={year}>
+              {year}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Cards */}
       <div className="grid gap-8">
-        {sortedSessions.map((session) => (
+        {filteredSessions.map((session, index) => (
           <div
-            key={session.session_key}
-            className="bg-neo-green border-4 border-white p-6 rounded-lg shadow-neo shadow-neo-blue transform hover:translate-y-[-4px] transition-transform"
+            key={index}
+            className="bg-neutral-800 border-4 border-neo-green p-6 rounded-xl shadow-lg hover:-translate-y-1 transition-transform"
           >
-            <h2 className="text-2xl font-bold text-neo-black">
-              {session.session_name}
+            <h2 className="text-2xl font-extrabold text-neo-green mb-4">
+              {session.session_name} ({session.session_type})
             </h2>
-            <div className="mt-4 grid grid-cols-2 gap-6">
-              <div className="space-y-3">
-                <p className="bg-white px-3 py-1 rounded border-2 border-neo-black text-neo-black font-medium">
-                  Type: {session.session_type}
-                </p>
-                <p className="bg-neo-yellow px-3 py-1 rounded border-2 border-neo-black text-neo-black font-medium">
-                  Status: {session.status}
-                </p>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+              <div className="bg-neutral-800 p-3 rounded-md border-2 border-neo-green font-semibold">
+                Circuit: {session.circuit_short_name}
               </div>
-              <div className="space-y-3">
-                <p className="bg-neo-purple px-3 py-1 rounded border-2 border-neo-black text-neo-black font-medium">
-                  Track: {session.circuit_short_name}
-                </p>
-                <p className="bg-neo-pink px-3 py-1 rounded border-2 border-neo-black text-neo-black font-medium">
-                  Date: {new Date(session.date_start).toLocaleDateString()}
-                </p>
+              <div className="bg-neutral-800 p-3 rounded-md border-2 border-neo-green font-semibold">
+                Country: {session.country_name}
+              </div>
+              <div className="bg-neutral-800 p-3 rounded-md border-2 border-neo-green font-semibold">
+                Location: {session.location}
+              </div>
+              <div className="bg-neutral-800 p-3 rounded-md border-2 border-neo-green font-semibold">
+                Start: {new Date(session.date_start).toLocaleString()}
+              </div>
+              <div className="bg-neutral-800 p-3 rounded-md border-2 border-neo-green font-semibold">
+                End: {new Date(session.date_end).toLocaleString()}
+              </div>
+              <div className="bg-neutral-800 p-3 rounded-md border-2 border-neo-green font-semibold">
+                GMT Offset: {session.gmt_offset}
+              </div>
+              <div className="bg-neutral-800 p-3 rounded-md border-2 border-neo-green font-semibold">
+                Year: {session.year}
               </div>
             </div>
           </div>

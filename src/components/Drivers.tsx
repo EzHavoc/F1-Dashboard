@@ -52,14 +52,14 @@ function Drivers() {
 
   return (
     <div className="space-y-8 bg-black min-h-screen p-6">
-      <h1 className="text-4xl font-bold text-white border-b-4 border-purple-600 pb-2">
+      <h1 className="text-4xl font-bold text-white border-b-4 border-neo-pink pb-2">
         F1 Drivers
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {enrichedDrivers.map((driver: any) => (
           <div
             key={driver.driver_number}
-            className="bg-zinc-900 border border-zinc-800 p-6 rounded-2xl shadow-lg transform hover:-translate-y-1 hover:border-purple-500 transition-all duration-200 hover:shadow-[0_4px_20px_rgba(192,132,252,0.5)]"
+            className="bg-zinc-900 border border-zinc-800 p-6 rounded-2xl shadow-lg transform hover:-translate-y-1 hover:border-neo-pink transition-all duration-200 hover:shadow-[0_4px_20px_rgba(192,132,252,0.5)]"
           >
             <div className="flex items-center gap-4">
               <img

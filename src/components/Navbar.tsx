@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Flag, Users, Calendar, Radio, Cloud } from 'lucide-react';
 
@@ -12,21 +11,34 @@ function Navbar() {
             <span className="text-2xl font-black text-neo-white tracking-superwide uppercase font-display">F1 Dash</span>
           </Link>
           <div className="flex space-x-4">
-            {[
-              { to: '/drivers', Icon: Users, label: 'Drivers', color: 'neo-pink' },
-              { to: '/sessions', Icon: Calendar, label: 'Sessions', color: 'neo-green' },
-              { to: '/team-radio', Icon: Radio, label: 'Radio', color: 'neo-yellow' },
-              { to: '/weather', Icon: Cloud, label: 'Weather', color: 'neo-blue' },
-            ].map(({ to, Icon, label, color }) => (
-              <Link
-                key={to}
-                to={to}
-                className={`flex items-center space-x-2 text-neo-black hover:translate-y-[-2px] transition-transform bg-${color} px-5 py-2 rounded-lg border-4 border-neo-black shadow-neo shadow-neo-black font-black uppercase tracking-wider font-display`}
-              >
-                <Icon className="w-5 h-5" />
-                <span>{label}</span>
-              </Link>
-            ))}
+            <Link
+              to="/drivers"
+              className="flex items-center space-x-2 text-neo-black hover:translate-y-[-2px] transition-transform bg-neo-pink px-5 py-2 rounded-lg border-4 border-neo-black shadow-neo shadow-neo-black font-black uppercase tracking-wider font-display"
+            >
+              <Users className="w-5 h-5" />
+              <span>Drivers</span>
+            </Link>
+            <Link
+              to="/sessions"
+              className="flex items-center space-x-2 text-neo-black hover:translate-y-[-2px] transition-transform bg-neo-green px-5 py-2 rounded-lg border-4 border-neo-black shadow-neo shadow-neo-black font-black uppercase tracking-wider font-display"
+            >
+              <Calendar className="w-5 h-5" />
+              <span>Sessions</span>
+            </Link>
+            <Link
+              to="/team-radio"
+              className="flex items-center space-x-2 text-neo-black hover:translate-y-[-2px] transition-transform bg-neo-yellow px-5 py-2 rounded-lg border-4 border-neo-black shadow-neo shadow-neo-black font-black uppercase tracking-wider font-display"
+            >
+              <Radio className="w-5 h-5" />
+              <span>Radio</span>
+            </Link>
+            <Link
+              to="/weather"
+              className="flex items-center space-x-2 text-neo-black hover:translate-y-[-2px] transition-transform bg-neo-blue px-5 py-2 rounded-lg border-4 border-neo-black shadow-neo shadow-neo-black font-black uppercase tracking-wider font-display"
+            >
+              <Cloud className="w-5 h-5" />
+              <span>Weather</span>
+            </Link>
           </div>
         </div>
       </div>
